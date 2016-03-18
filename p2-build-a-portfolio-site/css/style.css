@@ -1,28 +1,31 @@
-html,
 body {
   width: 90%;
   margin: 20px auto 30px;
+  font: 14px 'Myriad Set Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 100;
-  font-family: 'Myriad Set Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  letter-spacing: normal;
 } 
+
+/* Common */
 
 a {
   color: #747704;
   text-decoration: none;
 }
 
+a:hover {
+  opacity: 0.8;
+}
+
 p {
   margin: auto;
   padding: 12px 10px;
   width: 40%;
+  min-width: 100px;
   color: #777;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 200;
-  font-size: 14px;
-}
-
-a:hover {
-  opacity: 0.8;
 }
 
 .uppercase {
@@ -112,6 +115,8 @@ section {
   color: #747704;
   margin: 5px;
 }
+
+/* small desktop & horizontal tablet */
 
 @media all and (max-width: 1024px) {
   .title {
