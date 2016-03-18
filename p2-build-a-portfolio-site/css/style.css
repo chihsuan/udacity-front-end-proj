@@ -1,0 +1,165 @@
+html,
+body {
+  width: 90%;
+  margin: 20px auto 30px;
+  font-weight: 100;
+  font-family: 'Myriad Set Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+} 
+
+a {
+  color: #747704;
+  text-decoration: none;
+}
+
+p {
+  margin: auto;
+  padding: 12px 10px;
+  width: 40%;
+  color: #777;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 200;
+  font-size: 14px;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+/* Header */
+
+header {
+  margin: 10px;
+  padding: 5px;
+  display: block;
+  border-bottom: 4px solid #bcbbbb;
+}
+
+#logo {
+  width: 12%;
+  min-width: 45px;
+  max-width: 100px;
+  border-radius: 50%;
+}
+
+.nav-right {
+  float: right;
+  text-align: right;
+}
+
+.title {
+  font-size: 46px;
+  font-weight: 100;
+  color: #747704;
+  margin: 0;
+}
+
+.sub-title {
+  font-size: 22px;
+  font-weight: 300;
+  color: #747704;
+  margin-top: 5px;
+}
+
+/* Big Image */
+
+.feature-image {
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 50vh;
+  background-position: center center;
+  background-size: contain;
+  background-color: #9baab0;
+  background-image: url(https://i.ytimg.com/vi/0tj6VLuSowQ/maxresdefault.jpg);
+}
+
+/* Feature Work Section */
+
+section {
+  padding: 10px;
+}
+
+.section-title {
+  font-weight: 300;
+  padding: 20px 20px 0px;
+  font-size: 35px;
+  color: #bcbbbb;
+}
+
+.container {
+  margin-top: 20px;
+  display: flex;
+}
+
+.work {
+  width: 50%;
+  text-align: center;
+}
+
+.work img {
+  width: 90%;
+  max-width: 210px;
+  border: 1px solid #eee;
+  max-height: 200px;
+}
+
+.work h3 {
+  font-weight: 400;
+  font-size: 28px;
+  color: #747704;
+  margin: 5px;
+}
+
+@media all and (max-width: 1024px) {
+  .title {
+    font-size: 32px;
+  }
+
+  .sub-title {
+    font-size: 24px;
+  }
+}
+
+/* phone */
+
+@media all and (max-width: 670px) {
+
+  header {
+    margin-bottom: 10px;
+    padding: 10px 5px;
+    height: 65px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .sub-title {
+    font-size: 18px;
+  }
+
+  .feature-image {
+    height: 250px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .container {
+    display: block;
+  }
+
+  .work {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .work h3 {
+    font-size: 18px;
+  }
+}
