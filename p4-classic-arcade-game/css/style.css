@@ -1,0 +1,28 @@
+body {
+  text-align: center;
+  background: black;
+}
+
+canvas {
+  margin-top: -30px;
+}
+
+.game-status {
+  width: 297px;
+  margin: 0 auto;
+  background: #eee;
+  padding: 10px;
+  line-height: 1.2;
+}
+
+h5 {
+  margin: 10px;
+}
+
+.height-score {
+  color: orange;
+}
+
+.lower-hp {
+  color: red;
+}
