@@ -223,7 +223,7 @@ var Engine = (function(global) {
    */
   function updateTimeStatus() {
     diffSeconds = Math.floor(Math.abs(new Date() - startTime) / 1000);
-    player.timeLeft = diffSeconds > 60 ? 0 : 60 - diffSeconds + bonusTime;
+    player.timeLeft = 60 + bonusTime - diffSeconds;
     document.getElementById('time-left').innerHTML = 'Time Left：' + player.timeLeft;
   }
 

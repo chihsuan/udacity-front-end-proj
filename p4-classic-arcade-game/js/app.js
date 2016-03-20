@@ -208,7 +208,7 @@ Player.prototype.reset = function() {
 var Treasure = function(sprite) {
   this.sprite = sprite;
   this._resetPosition();
-  this.lastUpdate = 60;
+  this.lastUpdate = 0;
 };
 
 /**
@@ -219,11 +219,11 @@ Treasure.prototype.render = function() {
 };
 
 /**
-* @description Update the treasures on the screen every 3s
+* @description Update the treasures on the screen every 5s
 * @param {number} diffSecond
  */
 Treasure.prototype.update = function(diffSecond) {
-  if (this.lastUpdate > (diffSecond + 3)) {
+  if (this.lastUpdate < (diffSecond - 5)) {
     this._resetPosition();
     this.lastUpdate = diffSecond;
   }
