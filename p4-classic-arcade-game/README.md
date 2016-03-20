@@ -17,3 +17,4 @@ Here are the feedback when player reach the the objects on the screen:
 * Star: player's score will be added by 10.
 * Heart: player's HP will be added by 5.
 * Key: player's left time will be added by 10.
+* Water: player's HP will reduced by 5.
