@@ -35,7 +35,7 @@ Some useful tips to help you get started:
 
 1. Using `async` to load js.
 2. Inline css, move font link to bottom.
-3. Minify html, css, js, images using gulp and gzip.
+3. Minify html, css, js, images using gulp and gzip (cannot use in gh-page, comment in gulpefile).
 
 #### Part 2: Optimize Frames per Second in pizza.html
 
