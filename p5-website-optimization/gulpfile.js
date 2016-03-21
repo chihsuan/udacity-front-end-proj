@@ -36,10 +36,6 @@ gulp.task('css', function() {
 gulp.task('image', function () {
   return gulp.src(['./src/**/*.jpg', './src/**/*.png'])
   .pipe(imagemin({
-    progressive: true,
-    svgoPlugins: [{removeViewBox: false}],
-    interlaced: true,
-    optimizationLevel: 7,
     use: [pngquant({quality: '25-50'}), imageminJpegRecompress({min: 60, max: 95})]
   }))
   .pipe(gulp.dest('./dist'));
