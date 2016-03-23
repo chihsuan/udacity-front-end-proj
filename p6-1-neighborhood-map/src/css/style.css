@@ -17,6 +17,7 @@ body {
 /* Sidebar Menu */
 
 .menu {
+  z-index: 999 !important;
   color: #989898;
   overflow: hidden;
 }
