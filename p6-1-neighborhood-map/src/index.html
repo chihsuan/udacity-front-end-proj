@@ -23,7 +23,7 @@
     <h5 class="status" data-bind="text: status, visible: filteredPlaces().length === 0"></h5>
 
     <ul id="list-view" data-bind="foreach: filteredPlaces(), visible: filteredPlaces().length > 0">
-      <li class="clickable" data-bind="click: $parent.showPlace, css: { active: $parent.activePlace() == id() }">
+      <li class="clickable" data-bind="click: $parent.showPlace, css: { active: $parent.activePlace() == id() }, attr: { id: 'place-' + id() }">
         <h5 class="name" data-bind="text: name"></h5>
       </li>
     </ul>

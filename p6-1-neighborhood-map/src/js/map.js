@@ -1,4 +1,4 @@
-(function(window) {
+(function(window, ko) {
 
   // Open Weather API
   var WEATHER_API = 'http://api.openweathermap.org/data/2.5/weather?appid=880bffc84e2e5b4832fadb69743c082e';
@@ -43,6 +43,9 @@
   * @param {string} content, show on infowindow
   * */
   function addMaker(id, location, props) {
+    if (this.currentMarkers.hasOwnProperty(id))
+      return;
+
     var self = this;
     var myLatlng = new google.maps.LatLng(location.lat, location.lng);
     var marker = new google.maps.Marker({
@@ -66,7 +69,11 @@
 
     marker.props = props;
     marker.addListener('click', function() {
+      window.vm.activePlace(props.id);
       self._focusAndActiveMarker(marker);
+      $('#list-view').animate({
+          scrollTop: $("#place-"+props.id).offset().top
+      }, 2000);
     });
 
     self.currentMarkers[id] = marker;
@@ -185,4 +192,4 @@
     this.map.setStreetView(panorama);
   }
 
-})(window);
+})(window, ko);
