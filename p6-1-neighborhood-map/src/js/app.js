@@ -53,6 +53,8 @@
 
         return _filteredPlaces;
       } else {
+        mapControl.filterMarkers(self.places());
+
         return self.places();
       }
     });
@@ -138,7 +140,9 @@
     }});
   }
 
-  ko.applyBindings(new AppViewModel());
+  window.vm = new AppViewModel();
+  ko.applyBindings(vm);
+
 
   /* Sidebar setting */
   var sidebar = $('.ui.sidebar')
