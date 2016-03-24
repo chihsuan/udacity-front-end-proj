@@ -11,6 +11,7 @@
     setCenter: setCenter,
     focusToMarkerById: focusToMarkerById,
     filterMarkers: filterMarkers,
+    isGoogleMapLoad: isGoogleMapLoad,
 
     // Private
     _focusAndActiveMarker: _focusAndActiveMarker,
@@ -20,20 +21,25 @@
     // Variable
     currentMarkers: {},
     currentActiveMarker: null,
-    infowindow: null
+    infowindow: null,
+    center: {
+      lat: 23.6,
+      lng: 120.3
+    }
   };
 
-  // Initilize the map
-  mapControl.initMap('map', { center: { lat: 23.6, lng: 120.3 }, zoom: 14 });
+  window.initMap = initMap;
+  window.handleMapError = handleMapError;
 
   /**
    * @description Initialize google map
-   * @param {string} id
-   * @param {object} option, see google map option...
    */
-  function initMap(id, option) {
-    option = option ? option : {};
-    mapControl.map = new google.maps.Map(document.getElementById(id), option);
+  function initMap() {
+    mapControl.map = new google.maps.Map(document.getElementById('map'), {
+      center: mapControl.center,
+      zoom: 14
+    });
+    mapControl.bounds = new google.maps.LatLngBounds();
   }
 
   /**
@@ -52,11 +58,11 @@
       map: self.map,
       position: myLatlng
     });
+    self.bounds.extend(myLatlng);
 
     // If has & match specific category, then style the marker
     if (props.categories && props.categories.length > 0) {
       var category = props.categories[0].name.toLowerCase();
-
       if (category.indexOf('food') >= 0 ||
          category.indexOf('restaurant') >= 0) {
         marker.setIcon('./images/food.jpg');
@@ -65,13 +71,25 @@
           category.indexOf('store') >= 0) {
         marker.setIcon('./images/shop.png');
       }
+      else if (category.indexOf('hotel') >= 0) {
+        marker.setIcon('./images/hotel.png');
+      }
+      else if (category.indexOf('hospital') >= 0 ||
+            category.indexOf('drugstore') >= 0) {
+        marker.setIcon('./images/hospital.png');
+      }
+      else if (category.indexOf('school') >= 0 ||
+            category.indexOf('university') >= 0 ||
+            category.indexOf('college') >= 0) {
+        marker.setIcon('./images/school.png');
+      }
     }
 
     marker.props = props;
     marker.addListener('click', function() {
       window.vm.activePlace(props.id);
       self._focusAndActiveMarker(marker);
-      $('#list-view').animate({
+      $('.list-view').animate({
           scrollTop: $("#place-"+props.id).offset().top
       }, 2000);
     });
@@ -85,7 +103,12 @@
    * @param {float} lng
    */
   function setCenter(lat, lng) {
-    this.map.setCenter(new google.maps.LatLng(lat, lng));
+    if (!isGoogleMapLoad()) {
+      self.center = center;
+      return;
+    }
+    var center = new google.maps.LatLng(lat, lng);
+    this.map.setCenter(center);
   }
 
   /**
@@ -145,7 +168,7 @@
       'Category：' + category + '<br>' +
       'Contact phone：' + phone + '<br></p>';
 
-    if (weatherInfo !== 'error') {
+    if (weatherInfo) {
       content += '<h4>Weather</h4>';
       content += '<p>Temp：' + weatherInfo.main.temp + '<br>' +
       'Humidity：' + weatherInfo.main.humidity + '<br>' +
@@ -163,6 +186,9 @@
    * @param {array} markers
    */
   function filterMarkers(places) {
+    if (!mapControl.isGoogleMapLoad())
+      return;
+
     var self = this;
     // Hide all
     for(var placeId in self.currentMarkers) {
@@ -171,7 +197,8 @@
 
     // Show only places filtered
     places.forEach(function(places) {
-      self.currentMarkers[places.id()].setVisible(true);
+      if (self.currentMarkers.hasOwnProperty(places.id()))
+        self.currentMarkers[places.id()].setVisible(true);
     });
   }
 
@@ -190,6 +217,20 @@
         panControl: false
     });
     this.map.setStreetView(panorama);
+  }
+
+  /*
+   * @description Handle load google map error
+   */
+  function handleMapError() {
+    alert('Google Map cannot be load！');
+  }
+
+  /*
+   * @description Check google map has been loaded
+   */
+  function isGoogleMapLoad() {
+    return typeof google !== 'undefined';
   }
 
 })(window, ko);

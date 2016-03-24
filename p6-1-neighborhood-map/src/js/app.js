@@ -2,6 +2,7 @@
 
   var FOURSQUAR_SEARCH_API = 'https://api.foursquare.com/v2/venues/search?' +
       'oauth_token=EACTJOEC3DFI4G4FHBQILJ1WVA1ZASBOIE4E5SKCO04ACVBC&v=20160323';
+  var location = {};
 
   /*
   * @description Repersent Place
@@ -13,6 +14,8 @@
     this.contact = ko.observable(data.contact);
     this.location = ko.observable(data.location);
     this.categories = ko.observable(data.categories);
+    var category = data.categories[0] ? data.categories[0].name : '';
+    this.category = ko.observable(category);
   }
 
   /* @description ListView AppViewModel
@@ -32,17 +35,20 @@
 
     // Serach view filter
     self.filterInput = ko.observable('');
+    self.categoryInput = ko.observable('');
     self.filter = function() {};
     // If user query then return query set by string matching,
     // Else return all places.
     self.filteredPlaces = ko.computed(function () {
 
       var query = self.filterInput().toLowerCase().trim();
+      var categoryQuery = self.categoryInput().toLowerCase().trim();
 
-      if(query) {
+      if(query || categoryQuery) {
         // Filter
         var _filteredPlaces = self.places().filter(function (place) {
-          return place.name().toLowerCase().indexOf(query) >= 0;
+          return (query && place.name().toLowerCase().indexOf(query) >= 0) ||
+            (categoryQuery && place.category().toLowerCase().indexOf(categoryQuery) >= 0);
         });
 
         // Check _filteredPlaces is not null or undefined
@@ -73,11 +79,12 @@
     * @description GetCurrentPosition callback function
     * @param {object} locaiton
     * */
-    function _onCurrentPositionCallBack(location) {
-      var lat = location.coords.latitude;
-      var lng = location.coords.longitude;
-      var dataAPI = FOURSQUAR_SEARCH_API + '&ll='+ lat + ',' +  lng + '';
-      mapControl.setCenter(lat, lng);
+    function _onCurrentPositionCallBack(position) {
+      location = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var dataAPI = FOURSQUAR_SEARCH_API + '&ll='+ location.lat + ',' +  location.lng + '';
       fetchData(dataAPI, _onFetchCallBack);
     }
 
@@ -87,19 +94,27 @@
     * */
     function _onFetchCallBack(data) {
       // No data or error occurs...
-      if (!data) {
-        self.status('Sorry, Foursquare has no your neighborhood data...');
-        return;
-      } else if (data === 'error') {
+      if (!data)  {
         self.status('Unable to connect to Foursquare...');
+        return;
+      }
+      else if (!data.response || !data.response.venues ||
+               data.response.venues.length === 0) {
+        self.status('Sorry, Foursquare has no your neighborhood data...');
         return;
       }
 
       var venues = data.response.venues;
       var mappedPlaces = $.map(venues, function(item) {
-        mapControl.addMaker(item.id, item.location, item);
+        if (mapControl.isGoogleMapLoad())
+          mapControl.addMaker(item.id, item.location, item);
         return new Place(item);
       });
+      if (mapControl.isGoogleMapLoad())
+        mapControl.map.fitBounds(mapControl.bounds);
+
+      // Set center, if google map not load, it will save.
+      mapControl.setCenter(location.lat, location.lng);
 
       self.places(mappedPlaces);
       self.status('Not Found...');
@@ -124,10 +139,13 @@
   function fetchData(dataAPI, cb) {
     // Fetch data
     $.getJSON(dataAPI, function(data) {
+      if (!data) {
+        data = [];
+      }
       cb(data);
     // Error Handle...
     }).fail(function(response) {
-      cb('error');
+      cb(null);
     });
   }
 
@@ -143,7 +161,6 @@
   window.vm = new AppViewModel();
   ko.applyBindings(vm);
 
-
   /* Sidebar setting */
   var sidebar = $('.ui.sidebar')
     .sidebar('setting', 'transition', 'overlay')
@@ -151,13 +168,17 @@
     .sidebar('setting', 'closable', false);
 
   /* Toggle sidebar when toggle-list div onclick  */
-  $('#toggle-list').on('click', function() {
-    var self = $(this);
-    var newLeft = self.css('left') === '0px' ? '240px' : 0;
+  var toogleList = $('#toggle-list').on('click', toggleSidebar);
 
+  function toggleSidebar() {
+    var self = toogleList;
+    var newLeft = self.css('left') === '0px' ? '240px' : 0;
     self.animate({ left: newLeft }, 220);
     sidebar.sidebar('toggle');
-  });
+  }
 
   window.fetchData = fetchData;
+
+  $('body').removeClass('pushable');
+
 })(window, ko);

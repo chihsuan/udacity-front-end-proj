@@ -32,8 +32,7 @@
     var result = localStorage.getItem(key);
     if (result) {
       try {
-        result = JSON.parse(result);
-        cb(result, opts);
+        cb(JSON.parse(result), opts);
       }
       catch(e) {
         console.log(e);
