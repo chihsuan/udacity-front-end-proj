@@ -14,7 +14,7 @@
   <div class="ui fixed inverted main menu">
   </div>
 
-  <div class="ui sidebar visible inverted vertical menu">
+  <div class="ui sidebar visible inverted vertical menu" data-bind="sidebarVisible: displayMenu">
     <a href="./" class="item">
       Neighborhood Map
     </a>
@@ -36,7 +36,7 @@
     </ul>
   </div>
 
-  <i id="toggle-list" class="toggle-list sidebar icon"></i>
+  <i id="toggle-list" class="toggle-list sidebar icon" data-bind="click: toggleMenu, slideIcon: displayMenu"></i>
 
   <div id="map" class="pusher map">
   </div>

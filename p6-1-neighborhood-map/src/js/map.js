@@ -1,3 +1,7 @@
+/* Display the map view by using Google map API
+ * Support the markers manipulation functions
+* */
+
 (function(window, ko) {
 
   // Open Weather API
@@ -21,11 +25,7 @@
     // Variable
     currentMarkers: {},
     currentActiveMarker: null,
-    infowindow: null,
-    center: {
-      lat: 23.6,
-      lng: 120.3
-    }
+    infowindow: null
   };
 
   window.initMap = initMap;
@@ -36,7 +36,7 @@
    */
   function initMap() {
     mapControl.map = new google.maps.Map(document.getElementById('map'), {
-      center: mapControl.center,
+      center: window.userLocation,
       zoom: 14
     });
     mapControl.bounds = new google.maps.LatLngBounds();

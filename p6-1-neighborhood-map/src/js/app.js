@@ -1,9 +1,11 @@
+/* Fetching Data from foursquare and display the Listivew
+ * Using Knockout.js to control state change
+* */
+
 (function(window, ko) {
 
   var FOURSQUAR_SEARCH_API = 'https://api.foursquare.com/v2/venues/search?' +
       'oauth_token=EACTJOEC3DFI4G4FHBQILJ1WVA1ZASBOIE4E5SKCO04ACVBC&v=20160323';
-  var location = {};
-
   /*
   * @description Repersent Place
   * @constructor
@@ -25,6 +27,15 @@
     var self = this;
     self.status = ko.observable('Loading...');
     self.places = ko.observableArray([]);
+    self.toggleMenu = function() {
+      if (self.displayMenu())
+        self.displayMenu(false);
+      else
+        self.displayMenu(true);
+      //$('.toggle-list').animate({ left: 0 }, 220);
+      //sidebar.sidebar('toggle');
+    };
+    self.displayMenu = ko.observable(true);
 
     // Control and active the user select
     self.activePlace = ko.observable('');
@@ -80,11 +91,11 @@
     * @param {object} locaiton
     * */
     function _onCurrentPositionCallBack(position) {
-      location = {
+      var userLocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      var dataAPI = FOURSQUAR_SEARCH_API + '&ll='+ location.lat + ',' +  location.lng + '';
+      var dataAPI = FOURSQUAR_SEARCH_API + '&ll='+ userLocation.lat + ',' +  userLocation.lng + '';
       fetchData(dataAPI, _onFetchCallBack);
     }
 
@@ -106,15 +117,26 @@
 
       var venues = data.response.venues;
       var mappedPlaces = $.map(venues, function(item) {
-        if (mapControl.isGoogleMapLoad())
+        // Check google map status
+        if (mapControl.isGoogleMapLoad()) {
           mapControl.addMaker(item.id, item.location, item);
+        }
+        else {
+          setTimeout(function() {
+            if (mapControl.isGoogleMapLoad())
+              mapControl.addMaker(item.id, item.location, item);
+          }, 1000);
+        }
+
         return new Place(item);
       });
-      if (mapControl.isGoogleMapLoad())
-        mapControl.map.fitBounds(mapControl.bounds);
 
-      // Set center, if google map not load, it will save.
-      mapControl.setCenter(location.lat, location.lng);
+      if (mapControl.map)
+        mapControl.map.fitBounds(mapControl.bounds);
+      else
+        setTimeout(function() {
+          mapControl.map.fitBounds(mapControl.bounds);
+        }, 1000);
 
       self.places(mappedPlaces);
       self.status('Not Found...');
@@ -158,27 +180,34 @@
     }});
   }
 
-  window.vm = new AppViewModel();
-  ko.applyBindings(vm);
+  // Animated transitions custom binfing for Sidebar
+  ko.bindingHandlers.sidebarVisible = {
+    init: function(element, valueAccessor) {
+      var value = valueAccessor();
+      // Initially set the element to be instantly visible/hidden depending on the value
+      $(element).toggle(ko.unwrap(value));
+    },
+    update: function(element, valueAccessor) {
+      var value = valueAccessor();
+      ko.unwrap(value) ? $(element).animate({ left: 0 }) : $(element).animate({ left: '-240px' });
+    }
+  };
 
-  /* Sidebar setting */
-  var sidebar = $('.ui.sidebar')
-    .sidebar('setting', 'transition', 'overlay')
-    .sidebar('setting', 'dimPage', false)
-    .sidebar('setting', 'closable', false);
-
-  /* Toggle sidebar when toggle-list div onclick  */
-  var toogleList = $('#toggle-list').on('click', toggleSidebar);
-
-  function toggleSidebar() {
-    var self = toogleList;
-    var newLeft = self.css('left') === '0px' ? '240px' : 0;
-    self.animate({ left: newLeft }, 220);
-    sidebar.sidebar('toggle');
-  }
+  // Animated transitions custom binfing for hamberger icon
+  ko.bindingHandlers.slideIcon = {
+    init: function(element, valueAccessor) {
+      var value = valueAccessor();
+      // Initially set the element to be instantly visible/hidden depending on the value
+      $(element).toggle(ko.unwrap(value));
+    },
+    update: function(element, valueAccessor) {
+      var value = valueAccessor();
+      ko.unwrap(value) ? $(element).animate({ left: '240px' }) : $(element).animate({ left: 0 });
+    }
+  };
 
   window.fetchData = fetchData;
-
-  $('body').removeClass('pushable');
+  window.vm = new AppViewModel();
+  ko.applyBindings(vm);
 
 })(window, ko);
