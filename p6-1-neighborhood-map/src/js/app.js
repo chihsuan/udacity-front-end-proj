@@ -32,8 +32,6 @@
         self.displayMenu(false);
       else
         self.displayMenu(true);
-      //$('.toggle-list').animate({ left: 0 }, 220);
-      //sidebar.sidebar('toggle');
     };
     self.displayMenu = ko.observable(true);
 
