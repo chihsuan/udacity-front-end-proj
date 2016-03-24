@@ -59,7 +59,7 @@ $(function() {
      * hiding/showing of the menu element.
      */
     it('is hidden by default', function() {
-      expect(document.body.className).toBe('menu-hidden');
+      expect($(body).hasClass('menu-hidden')).toBe(true);
     });
 
 
@@ -70,10 +70,10 @@ $(function() {
      */
     it('change visibility when the icon is clicked', function() {
       $('.menu-icon-link').click();
-      expect(document.body.className).not.toBe('menu-hidden');
+      expect($(body).hasClass('menu-hidden')).toBe(false);
 
       $('.menu-icon-link').click();
-      expect(document.body.className).toBe('menu-hidden');
+      expect($(body).hasClass('menu-hidden')).toBe(true);
     });
 
   });
@@ -91,9 +91,7 @@ $(function() {
       expect(allFeeds).toBeDefined();
       expect(allFeeds.length).not.toBeLessThan(1);
       // Call loadFeed asynchronous
-      loadFeed(0, function() {
-        done();
-      });
+      loadFeed(0, done);
     });
 
     it('should has at least one element', function(done) {
@@ -119,7 +117,6 @@ $(function() {
       loadFeed(1, function() {
         // Check that feeds have been load
         // Save initial feed container's fist entry content
-        expect($('.feed .entry')).toBeDefined();
         expect($('.feed .entry').length).not.toBe(0);
         oldEntryName = $('.feed .entry:first').text();
         expect(oldEntryName).not.toBe('');
@@ -127,7 +124,6 @@ $(function() {
         loadFeed(0, function() {
           // Check that feeds have been load
           // Save second time's feed container's fist entry content
-          expect($('.feed .entry')).toBeDefined();
           expect($('.feed .entry').length).not.toBe(0);
           newEntryName = $('.feed .entry:first').text();
           expect(newEntryName).not.toBe('');
